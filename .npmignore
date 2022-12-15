@@ -1,0 +1,7 @@
+examples/
+node_modules/
+build.js
+.idea/
+ajaxhook.png
+dist.js
+.travis.yml

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>proxy request</title>
+  <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+  <script src="../dist/ajaxhook.min.js"></script>
+  <script src="https://cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+</head>
+<body>
+
+<div>aaa</div>
+<button onclick="onClick()">bbb</button>
+<script>
+     //https://api.csgoroll.com/graphql?operationName=UserDailyWithdrawalRemainder&variables=%7B%22userId%22:%22VXNlcjo2MjcyMDI3%22%7D&extensions=%7B%22persistedQuery%22:%7B%22version%22:1,%22sha256Hash%22:%221f10ff411955e02668ca01b8b7399dedb202475194799ad30b36dceda8040f4f%22%7D%7D
+
+                    // https://api.csgoroll.com/graphql?operationName=UserDailyWithdrawalRemainder&variables=%7B%22userId%22:%22VXNlcjo2MjcyMDI3%22%7D&extensions=%7B%22persistedQuery%22:%7B%22version%22:1,%22sha256Hash%22:%221f10ff411955e02668ca01b8b7399dedb202475194799ad30b36dceda8040f4f%22%7D%7D
+
+  var count = 0;
+  ah.proxy({
+    onRequest: (config, handler) => {
+      if (config.url === 'https://api.csgoroll.com/graphql?operationName=UserDailyWithdrawalRemainder&variables=%7B%22userId%22:%22VXNlcjo2MjcyMDI3%22%7D&extensions=%7B%22persistedQuery%22:%7B%22version%22:1,%22sha256Hash%22:%221f10ff411955e02668ca01b8b7399dedb202475194799ad30b36dceda8040f4f%22%7D%7D') {
+        if (count++ % 2) {
+          console.log('111');
+          handler.resolve({
+            config: config,
+            status: 200,
+            headers: {'content-type': 'text/text'},
+            response: 'hi world'
+          })
+        } else {
+          console.log('222');
+          handler.next(config);
+        }
+      } else {
+        handler.next(config);
+      }
+    },
+  })
+
+  function onClick() {
+    $.ajax({
+      url: "https://www.pa.martin.fl.us/app/search/real-property?format=json&search=PHELPS%20JAMES%20READ&orderBy=pin&direction=asc&limit=20&offset=0&searchField=owner&exact=false",
+      type: "GET",
+      beforeSend: function(xhr){xhr.setRequestHeader('Content-Type', 'application/json');},
+      contentType: 'application/json; charset=utf-8',
+    }).done(function(response) {
+      console.log(response);
+    });
+
+    // $.get('https://www.pa.martin.fl.us/app/search/real-property?format=json&search=PHELPS%20JAMES%20READ&orderBy=pin&direction=asc&limit=20&offset=0&searchField=owner&exact=false')
+    //   .then((response) => {
+    //     // handle success
+    //     console.log('sucess', response);
+    //   }).catch((e) => {
+    //   console.log('error', e.message);
+    // })
+  }
+
+</script>
+
+</body>
+</html>
