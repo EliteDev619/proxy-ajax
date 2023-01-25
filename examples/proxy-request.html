@@ -14,11 +14,13 @@
     <div>TEST</div>
     <button onclick="onClick()">Submit</button>
     <script>
-        var myUrl = 'http://www.geoplugin.net/json.gp?ip=216.58.209.68';
+        var myUrl = 'https://api.npoint.io/73d11d3563ddbfaa4bd4';
+        // var myUrl = 'http://www.geoplugin.net/json.gp?ip=216.58.209.68';
 
         var proxy = 'https://cors-anywhere.herokuapp.com/';
 
-        var url = proxy + myUrl;
+        var url = myUrl;
+        // var url = proxy + myUrl;
         ah.proxy({
             onRequest: (config, handler) => {
                 if (config.url === url + 1) {
@@ -54,9 +56,7 @@
                 console.log("response=>", response);
 
                 if (response.config.url === url) {
-                    var temp = JSON.parse(response.response);
-                    temp.geoplugin_request = "localhost";
-                    temp.geoplugin_status = 404;
+                    var temp = setScore(JSON.parse(response.response));
                     response.response = JSON.stringify(temp);
                 }
                 handler.next(response)
@@ -66,11 +66,7 @@
         function onClick() {
             $.ajax({
                 url: url,
-                type: "POST",
-                data: {
-                    name: "Pavel",
-                    pass: "123"
-                },
+                type: "GET",
                 beforeSend: function(xhr) {
                     xhr.setRequestHeader('Content-Type', 'application/json');
                 },
@@ -79,6 +75,39 @@
                 console.log(response);
             });
         }
+
+        const user = {
+            score: "elite",
+            name: {
+                score: "aa",
+                bb: "bb"
+            },
+            age: 25,
+            dob: [{
+                cc: 'cc',
+                score: 'dd'
+            }],
+        };
+
+        var temp = setScore(user);
+
+        function setScore(data) {
+            for (const key in data) {
+                var row = data[key];
+                var type = typeof(row);
+                if (type == "object") {
+                    setScore(row);
+                } else {
+                    if (key == "score") {
+                        data[key] = Math.floor(Math.random() * 3000) / 10000;
+                    }
+                }
+            }
+
+            return data
+        }
+
+        console.log(temp);
     </script>
 
 </body>
